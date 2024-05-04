@@ -3,7 +3,7 @@
 
 // Listen for messages from the background script
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-  if (message.action === "newData") {
+  if (message.action === "newData" && message.bodyText) {
     // Update the compliment text with the new data
     document.getElementById('compliment-text').textContent = message.bodyText;
   }

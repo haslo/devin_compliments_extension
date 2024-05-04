@@ -22,6 +22,25 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
+  pointer-events: none; /* Ensure click-through */
+  opacity: 0; /* Start fully transparent */
+  z-index: 1000; /* Ensure it's on top of other content */
+  animation: fadeIn 3s ease-in forwards, fadeOut 6s ease-out 13s forwards; /* Fade in and stay for 10s before fading out */
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 #compliment-text {
