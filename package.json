@@ -1,0 +1,20 @@
+{
+  "name": "devin_compliments_extension",
+  "version": "1.0.0",
+  "description": "A Chrome extension that displays compliments fetched from an API.",
+  "type": "module",
+  "main": "background.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^5.1.0",
+    "jsdom": "^24.0.0",
+    "mocha": "^10.4.0",
+    "node-fetch": "^3.3.2",
+    "sinon": "^17.0.1"
+  }
+}
