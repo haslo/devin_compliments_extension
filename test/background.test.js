@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import fetch from 'node-fetch';
-import { fetchData, init } from '../background.js'; // Import fetchData and init from the background script
 
 // Since we cannot require the actual background script, we will need to simulate its behavior
 global.fetch = fetch; // Mock fetch globally
@@ -31,6 +30,17 @@ global.chrome = {
     clear: sinon.stub()
   }
 };
+
+// Delayed import of background.js functions
+let fetchData, init;
+
+before(function() {
+  // Mocks are already set up here
+  // Now, require the background.js module which uses the chrome API
+  const background = require('../background.js');
+  fetchData = background.fetchData;
+  init = background.init;
+});
 
 describe('Background script', function() {
   let fetchStub;
