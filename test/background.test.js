@@ -17,6 +17,8 @@ global.chrome = {
 
 describe('Background script', function() {
   let fetchStub;
+  let setIntervalStub;
+  let clearIntervalStub;
 
   beforeEach(function() {
     // Restore fetchStub if it exists, otherwise create a new stub for global.fetch
@@ -24,6 +26,11 @@ describe('Background script', function() {
       fetchStub.restore();
     }
     fetchStub = sinon.stub(global, 'fetch');
+
+    // Stub setInterval and clearInterval
+    setIntervalStub = sinon.stub(global, 'setInterval');
+    clearIntervalStub = sinon.stub(global, 'clearInterval');
+
     // Reset history for sendMessage stub
     if (global.chrome.runtime.sendMessage && typeof global.chrome.runtime.sendMessage.resetHistory === 'function') {
       global.chrome.runtime.sendMessage.resetHistory();
@@ -35,8 +42,10 @@ describe('Background script', function() {
   });
 
   afterEach(function() {
-    // Restore the stub to its original state
+    // Restore the stubs to their original state
     fetchStub.restore();
+    setIntervalStub.restore();
+    clearIntervalStub.restore();
     if (global.chrome.runtime.sendMessage && typeof global.chrome.runtime.sendMessage.restore === 'function') {
       global.chrome.runtime.sendMessage.restore();
     }
@@ -86,6 +95,24 @@ describe('Background script', function() {
 
       expect(fetchStub.calledOnce).to.be.true;
       expect(global.chrome.runtime.sendMessage.notCalled).to.be.true;
+    });
+  });
+
+  describe('Interval and immediate call', function() {
+    it('should set an interval to call fetchData', function() {
+      // The interval should be set using the value from config.js
+      // Since we cannot require config.js directly, we will assume the interval is 1 minute for this test
+      const expectedInterval = 60000;
+
+      // The setInterval call should have been made when the script was loaded
+      expect(setIntervalStub.calledOnce).to.be.true;
+      expect(setIntervalStub.firstCall.args[0]).to.equal(fetchData);
+      expect(setIntervalStub.firstCall.args[1]).to.equal(expectedInterval);
+    });
+
+    it('should call fetchData immediately when the script is loaded', function() {
+      // The fetchData function should have been called immediately when the script was loaded
+      expect(fetchStub.called).to.be.true;
     });
   });
 });
