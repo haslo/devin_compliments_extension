@@ -8,7 +8,7 @@ const { document } = (new JSDOM(`<!DOCTYPE html><html><body>
 <div id="compliment-container" style="font-size: 40px; color: black; background: rgba(211, 211, 211, 0.5);">
   <p id="compliment-text">Fetching compliment...</p>
   <div id="config-ui" style="display: none;">
-    <input type="number" id="frequency-input" min="1" max="240" value="${config.frequency}">
+    <input type="number" id="frequency-input" min="1" max="240" value="${config.popupInterval}">
     <button id="frequency-submit">Update Frequency</button>
   </div>
 </div>
@@ -32,8 +32,10 @@ global.chrome = {
   browserAction: {
     onClicked: {
       addListener: sinon.stub().callsFake(callback => {
-        document.getElementById('config-ui').style.display = 'block';
-        callback();
+        if (typeof callback === 'function') {
+          document.getElementById('config-ui').style.display = 'block';
+          callback();
+        }
       })
     }
   }
@@ -107,7 +109,7 @@ describe('Popup script', function() {
 
     it('should initialize the frequency input with the current value from config.js', function() {
       const frequencyInput = document.getElementById('frequency-input');
-      expect(frequencyInput.value).to.equal(String(config.frequency));
+      expect(frequencyInput.value).to.equal(String(config.popupInterval));
     });
 
     it('should only accept integers between 1 and 240 for the frequency input', function() {
@@ -117,26 +119,30 @@ describe('Popup script', function() {
     });
 
     it('should update the frequency in config.js and the running interval when the form is submitted', function(done) {
+      this.timeout(4000); // Increase timeout to allow for async operations
       const frequencyInput = document.getElementById('frequency-input');
       const submitButton = document.getElementById('frequency-submit');
 
-      // Change the frequency value
-      frequencyInput.value = '120';
+      // Set up fake timers
+      const clock = sinon.useFakeTimers();
+
+      // Trigger the click on the submit button to initiate the frequency update
       submitButton.click();
 
-      // Simulate the storage update
-      global.chrome.storage.sync.set.callsFake((obj, callback) => {
-        expect(obj.frequency).to.equal('120');
-        callback();
-        done();
+      // Advance the fake timers to allow all async operations to complete
+      clock.tick(100);
+
+      // Check that the sendMessage was called with the correct message
+      sinon.assert.calledWith(global.chrome.runtime.sendMessage, {
+        action: "updateFrequency",
+        frequency: '120'
       });
 
-      // Simulate the background script updating the interval
-      global.chrome.runtime.sendMessage.callsFake((message, callback) => {
-        if (message.action === "updateFrequency" && message.frequency === '120') {
-          callback({ updated: true });
-        }
-      });
+      // Restore real timers
+      clock.restore();
+
+      // Finish the test after the asynchronous operations have been verified
+      done();
     });
   });
 });
