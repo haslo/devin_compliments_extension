@@ -34,10 +34,10 @@ global.chrome = {
 // Delayed import of background.js functions
 let fetchData, init;
 
-before(function() {
+before(async function() {
   // Mocks are already set up here
-  // Now, require the background.js module which uses the chrome API
-  const background = require('../background.js');
+  // Now, dynamically import the background.js module which uses the chrome API
+  const background = await import('../background.js');
   fetchData = background.fetchData;
   init = background.init;
 });
