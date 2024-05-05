@@ -13,9 +13,9 @@ fs.writeFileSync('manifest.json', manifest);
 
 // Copy the images directory to the build directory
 fs.mkdirSync('build/images', { recursive: true }); // Ensure the target directory exists
-fs.copyFileSync('images/devin_icon16.png', 'build/images/icon16.png');
-fs.copyFileSync('images/devin_icon48.png', 'build/images/icon48.png');
-fs.copyFileSync('images/devin_icon128.png', 'build/images/icon128.png');
+fs.copyFileSync('images/icon16.png', 'build/images/icon16.png');
+fs.copyFileSync('images/icon48.png', 'build/images/icon48.png');
+fs.copyFileSync('images/icon128.png', 'build/images/icon128.png');
 
 // Copy other necessary files to the build directory
 fs.copyFileSync('popup.html', 'build/popup.html');
