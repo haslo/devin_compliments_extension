@@ -1,8 +1,0 @@
-<?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
-  "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg width="128" height="128">
-  <ellipse cx="30" cy="64" rx="10" ry="20"/>
-  <ellipse cx="98" cy="64" rx="10" ry="20"/>
-  <path d="M 20,80 Q 64,120 108,80"/>
-</svg>
