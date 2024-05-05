@@ -1,6 +1,6 @@
 # Devin's Compliments Extension
 
-This Chrome extension fetches data from a specified API and displays the content in a styled overlay within the Chrome browser window.
+This Chrome extension fetches data from a specified API and displays the content in a styled overlay within the Chrome browser window. It's designed to provide users with periodic compliments to brighten their day.
 
 ## How It's Built
 
@@ -8,7 +8,7 @@ The extension is built with HTML, CSS, and JavaScript. It uses the Chrome Extens
 
 ## Configuration
 
-The extension uses a `config.js` file to store configurable parameters such as the API URL, the key for the text to display, and the interval between popups.
+The extension uses a `config.js` file to store configurable parameters such as the API URL, the key for the text to display, and the interval between popups. To change the API endpoint, update the `apiURL` property in the `config.js` file.
 
 ## Development
 
@@ -65,6 +65,15 @@ Due to issues with automated test coverage reporting tools, a manual review of t
 - Checking that the tests cover all possible outcomes, including success, failure, and edge cases.
 
 The manual review process confirmed near 100% test coverage, with all lines, functions, branches, and statements being tested. This meets the coverage threshold of 90% as set for the project.
+
+## Known Issues and Limitations
+
+- Currently, the extension only fetches data from a single API endpoint. Future versions could allow for multiple sources.
+- The extension's popup UI is designed for English text. Non-English characters may not display correctly.
+
+## Reporting Bugs or Requesting Features
+
+To report a bug or request a feature, please create an issue in the GitHub repository with a detailed description of the bug or feature request.
 
 ## Contributing
 
