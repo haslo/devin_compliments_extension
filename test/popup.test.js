@@ -1,16 +1,43 @@
 import { expect } from 'chai';
 import { JSDOM } from 'jsdom';
 import sinon from 'sinon';
+import config from '../config.js';
 
 // Load the popup HTML into jsdom
-const { document } = (new JSDOM(`<!DOCTYPE html><html><body><div id="compliment-container" style="font-size: 40px; color: black; background: rgba(211, 211, 211, 0.5);"><p id="compliment-text">Fetching compliment...</p></div></body></html>`)).window;
+const { document } = (new JSDOM(`<!DOCTYPE html><html><body>
+<div id="compliment-container" style="font-size: 40px; color: black; background: rgba(211, 211, 211, 0.5);">
+  <p id="compliment-text">Fetching compliment...</p>
+  <div id="config-ui" style="display: none;">
+    <input type="number" id="frequency-input" min="1" max="240" value="${config.frequency}">
+    <button id="frequency-submit">Update Frequency</button>
+  </div>
+</div>
+</body></html>`)).window;
 
 // Since we cannot require the actual popup script, we will need to simulate its behavior
 global.document = document;
-global.chrome = { runtime: { onMessage: { addListener: sinon.stub() } } };
-
-// Mock the chrome.runtime.sendMessage function
-global.chrome.runtime.sendMessage = sinon.stub();
+global.chrome = {
+  runtime: {
+    onMessage: { addListener: sinon.stub() },
+    sendMessage: sinon.stub()
+  },
+  storage: {
+    sync: {
+      get: sinon.stub().callsFake((key, callback) => {
+        callback({ frequency: config.frequency });
+      }),
+      set: sinon.stub()
+    }
+  },
+  browserAction: {
+    onClicked: {
+      addListener: sinon.stub().callsFake(callback => {
+        document.getElementById('config-ui').style.display = 'block';
+        callback();
+      })
+    }
+  }
+};
 
 // This path may need to be adjusted based on the actual location of popup.js
 import('../popup.js').then(() => {
@@ -27,39 +54,81 @@ import('../popup.js').then(() => {
       sendResponse({ received: false });
     }
   });
+});
 
-  describe('Popup script', function() {
-    describe('chrome.runtime.onMessage listener', function() {
-      it('should update the compliment text when a new message is received', function(done) {
-        const validMessage = { action: "newData", bodyText: "Test compliment" };
-        global.chrome.runtime.onMessage.addListener(validMessage, {}, function(response) {
-          const complimentTextElement = document.getElementById('compliment-text');
-          expect(complimentTextElement.textContent).to.equal("Test compliment");
-          expect(response.received).to.be.true;
+describe('Popup script', function() {
+  describe('chrome.runtime.onMessage listener', function() {
+    it('should update the compliment text when a new message is received', function(done) {
+      const validMessage = { action: "newData", bodyText: "Test compliment" };
+      global.chrome.runtime.onMessage.addListener(validMessage, {}, function(response) {
+        const complimentTextElement = document.getElementById('compliment-text');
+        expect(complimentTextElement.textContent).to.equal("Test compliment");
+        expect(response.received).to.be.true;
+        done();
+      });
+    });
+
+    it('should not update the compliment text when an invalid message is received', function(done) {
+      // Reset the text content to its initial state before each test
+      document.getElementById('compliment-text').textContent = "Fetching compliment...";
+      const invalidMessage = { action: "newData" }; // Missing bodyText property
+      global.chrome.runtime.onMessage.addListener(invalidMessage, {}, function(response) {
+        const complimentTextElement = document.getElementById('compliment-text');
+        expect(complimentTextElement.textContent).to.equal("Fetching compliment...");
+        expect(response.received).to.be.false;
+        done();
+      });
+    });
+
+    it('should have the correct initial CSS properties for the compliment text', function() {
+      const complimentContainer = document.getElementById('compliment-container');
+      expect(complimentContainer.style.fontSize).to.equal('40px');
+      expect(complimentContainer.style.color).to.equal('black');
+      expect(complimentContainer.style.background).to.equal('rgba(211, 211, 211, 0.5)');
+    });
+
+    // Additional tests for animation timings and other CSS properties can be added here
+  });
+
+  describe('Configuration UI', function() {
+    it('should display the configuration UI when the extension icon is clicked', function() {
+      global.chrome.browserAction.onClicked.addListener();
+      const configUI = document.getElementById('config-ui');
+      expect(configUI.style.display).to.not.equal('none');
+    });
+
+    it('should initialize the frequency input with the current value from config.js', function() {
+      const frequencyInput = document.getElementById('frequency-input');
+      expect(frequencyInput.value).to.equal(config.frequency.toString());
+    });
+
+    it('should only accept integers between 1 and 240 for the frequency input', function() {
+      const frequencyInput = document.getElementById('frequency-input');
+      expect(frequencyInput.getAttribute('min')).to.equal('1');
+      expect(frequencyInput.getAttribute('max')).to.equal('240');
+    });
+
+    it('should update the frequency in config.js and the running interval when the form is submitted', function(done) {
+      const frequencyInput = document.getElementById('frequency-input');
+      const submitButton = document.getElementById('frequency-submit');
+
+      // Change the frequency value
+      frequencyInput.value = '120';
+      submitButton.click();
+
+      // Simulate the storage update
+      global.chrome.storage.sync.set.callsFake((obj, callback) => {
+        expect(obj.frequency).to.equal('120');
+        callback();
+      });
+
+      // Simulate the background script updating the interval
+      global.chrome.runtime.sendMessage.callsFake((message, callback) => {
+        if (message.action === "updateFrequency" && message.frequency === '120') {
+          callback({ updated: true });
           done();
-        });
+        }
       });
-
-      it('should not update the compliment text when an invalid message is received', function(done) {
-        // Reset the text content to its initial state before each test
-        document.getElementById('compliment-text').textContent = "Fetching compliment...";
-        const invalidMessage = { action: "newData" }; // Missing bodyText property
-        global.chrome.runtime.onMessage.addListener(invalidMessage, {}, function(response) {
-          const complimentTextElement = document.getElementById('compliment-text');
-          expect(complimentTextElement.textContent).to.equal("Fetching compliment...");
-          expect(response.received).to.be.false;
-          done();
-        });
-      });
-
-      it('should have the correct initial CSS properties for the compliment text', function() {
-        const complimentContainer = document.getElementById('compliment-container');
-        expect(complimentContainer.style.fontSize).to.equal('40px');
-        expect(complimentContainer.style.color).to.equal('black');
-        expect(complimentContainer.style.background).to.equal('rgba(211, 211, 211, 0.5)');
-      });
-
-      // Additional tests for animation timings and other CSS properties can be added here
     });
   });
 });
