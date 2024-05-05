@@ -130,7 +130,7 @@ describe('Popup script', function() {
       const clock = sinon.useFakeTimers();
 
       // Simulate the click on the submit button to initiate the frequency update
-      submitButton.dispatchEvent(new Event('click'));
+      submitButton.dispatchEvent(new MouseEvent('click'));
 
       // Advance the fake timers to allow all async operations to complete
       clock.tick(100);
