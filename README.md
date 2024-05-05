@@ -28,6 +28,13 @@ To run the unit tests:
 2. Run `npm test` to execute the tests.
 3. The test results will be displayed in the terminal. All tests should pass (indicated by green text).
 
+## Building the Extension
+
+To build the extension:
+
+1. Run `npm run build` to execute the build script.
+2. The build script will generate a `build/` directory with all the necessary files to load the extension into Chrome.
+
 ## Testing in Chrome
 
 To test the extension in Chrome:
@@ -35,7 +42,7 @@ To test the extension in Chrome:
 1. Open the Chrome browser.
 2. Navigate to `chrome://extensions/`.
 3. Enable 'Developer mode' at the top right.
-4. Click 'Load unpacked' and select the extension directory.
+4. Click 'Load unpacked' and select the `build/` directory.
 5. The extension should now be installed and can be tested.
 
 ## Files
