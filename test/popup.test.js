@@ -123,6 +123,9 @@ describe('Popup script', function() {
       const frequencyInput = document.getElementById('frequency-input');
       const submitButton = document.getElementById('frequency-submit');
 
+      // Set the frequency input value to '120'
+      frequencyInput.value = '120';
+
       // Set up fake timers
       const clock = sinon.useFakeTimers();
 
