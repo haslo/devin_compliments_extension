@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import fetch from 'node-fetch';
-import { fetchData } from '../background.js'; // Import fetchData from the background script
+import { fetchData, init } from '../background.js'; // Import fetchData and init from the background script
 
 // Since we cannot require the actual background script, we will need to simulate its behavior
 global.fetch = fetch; // Mock fetch globally
@@ -106,10 +106,8 @@ describe('Background script', function() {
       // Since we cannot require config.js directly, we will assume the interval is 1 minute for this test
       const expectedInterval = 60000;
 
-      // Simulate the script loading
-      // Instead of calling fetchData, we simulate the script initialization
-      // which should trigger the setInterval call
-      require('../background.js');
+      // Simulate the script initialization which should trigger the setInterval call
+      init();
 
       // Use process.nextTick to wait for the next tick of the event loop,
       // ensuring that setInterval has been called
@@ -124,10 +122,8 @@ describe('Background script', function() {
     });
 
     it('should call fetchData immediately when the script is loaded', function() {
-      // Simulate the script loading
-      // Instead of calling fetchData, we simulate the script initialization
-      // which should trigger the immediate call to fetchData
-      require('../background.js');
+      // Simulate the script initialization which should trigger the immediate call to fetchData
+      init();
 
       sinon.assert.called(fetchStub);
     });

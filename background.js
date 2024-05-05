@@ -16,8 +16,14 @@ export function fetchData() {
     .catch(error => console.error('Error fetching data: ', error));
 }
 
-// Fetch data at the interval specified in the config
-setInterval(fetchData, config.popupInterval * 60000);
+// Initialize the extension's background script functionality
+export function init() {
+  // Fetch data at the interval specified in the config
+  setInterval(fetchData, config.popupInterval * 60000);
 
-// Fetch data when the extension is first installed/loaded
-fetchData();
+  // Fetch data immediately when the script is loaded
+  fetchData();
+}
+
+// Call init to start the interval and immediate data fetch
+init();

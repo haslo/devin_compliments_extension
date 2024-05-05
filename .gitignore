@@ -1,2 +1,12 @@
 # Exclude build directory
 build/
+
+# Exclude coverage reports and artifacts
+.nyc_output/
+coverage/
+
+# Exclude package dependencies
+node_modules/
+
+# Exclude packaged extension
+devin_compliments_extension.zip
