@@ -107,7 +107,9 @@ describe('Background script', function() {
       const expectedInterval = 60000;
 
       // Simulate the script loading
-      fetchData();
+      // Instead of calling fetchData, we simulate the script initialization
+      // which should trigger the setInterval call
+      require('../background.js');
 
       // Use process.nextTick to wait for the next tick of the event loop,
       // ensuring that setInterval has been called
@@ -123,7 +125,10 @@ describe('Background script', function() {
 
     it('should call fetchData immediately when the script is loaded', function() {
       // Simulate the script loading
-      fetchData();
+      // Instead of calling fetchData, we simulate the script initialization
+      // which should trigger the immediate call to fetchData
+      require('../background.js');
+
       sinon.assert.called(fetchStub);
     });
   });
