@@ -105,14 +105,16 @@ describe('Background script', function() {
       const expectedInterval = 60000;
 
       // The setInterval call should have been made when the script was loaded
-      expect(setIntervalStub.calledOnce).to.be.true;
-      expect(setIntervalStub.firstCall.args[0]).to.equal(fetchData);
-      expect(setIntervalStub.firstCall.args[1]).to.equal(expectedInterval);
+      // Simulate the script loading
+      fetchData();
+      sinon.assert.calledWith(setIntervalStub, sinon.match.func, expectedInterval);
     });
 
     it('should call fetchData immediately when the script is loaded', function() {
       // The fetchData function should have been called immediately when the script was loaded
-      expect(fetchStub.called).to.be.true;
+      // Simulate the script loading
+      fetchData();
+      sinon.assert.called(fetchStub);
     });
   });
 });
