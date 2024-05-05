@@ -29,10 +29,12 @@ document.getElementById('frequency-input').addEventListener('input', function(ev
 document.getElementById('frequency-submit').addEventListener('click', function() {
   // Retrieve the frequency value from the input field
   var frequencyValue = document.getElementById('frequency-input').value;
+  // Parse the frequency value as an integer
+  var frequencyInt = parseInt(frequencyValue, 10);
   // Update the frequency in config.js and adjust the running interval
-  chrome.storage.sync.set({ frequency: frequencyValue }, function() {
-    console.log('Frequency value is set to ' + frequencyValue);
+  chrome.storage.sync.set({ frequency: frequencyInt }, function() {
+    console.log('Frequency value is set to ' + frequencyInt);
     // Send a message to the background script to update the interval
-    chrome.runtime.sendMessage({ action: "updateFrequency", frequency: frequencyValue });
+    chrome.runtime.sendMessage({ action: "updateFrequency", frequency: frequencyInt });
   });
 });

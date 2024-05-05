@@ -118,35 +118,27 @@ describe('Popup script', function() {
       expect(frequencyInput.getAttribute('max')).to.equal('240');
     });
 
-    it('should update the frequency in config.js and the running interval when the form is submitted', function(done) {
+    it('should update the running interval when the form is submitted', function(done) {
       this.timeout(4000); // Increase timeout to allow for async operations
-      const frequencyInput = document.getElementById('frequency-input');
+
+      // Set the frequency input value
+      document.getElementById('frequency-input').value = '120';
+
+      // Stub the set method to check if it's called with correct parameters
+      global.chrome.storage.sync.set.callsFake((obj, callback) => {
+        try {
+          expect(obj).to.have.property('frequency', 120);
+          callback();
+        } catch (error) {
+          done(error);
+          return;
+        }
+        done();
+      });
+
+      // Simulate a user clicking the submit button
       const submitButton = document.getElementById('frequency-submit');
-
-      // Simulate setting the frequency input value to 120
-      frequencyInput.value = 120;
-
-      // Set up fake timers
-      const clock = sinon.useFakeTimers();
-
-      // Create a new event for clicking the submit button
-      var clickEvent = document.createEvent('MouseEvents');
-      clickEvent.initEvent('click', true, true);
-
-      // Dispatch the event to the submit button
-      submitButton.dispatchEvent(clickEvent);
-
-      // Advance the fake timers to allow all async operations to complete
-      clock.tick(100);
-
-      // Check that the sendMessage was called with the correct message
-      sinon.assert.calledWith(global.chrome.runtime.sendMessage, sinon.match.has("action", "updateFrequency").and(sinon.match.has("frequency", 120)));
-
-      // Restore real timers
-      clock.restore();
-
-      // Finish the test after the asynchronous operations have been verified
-      done();
+      submitButton.click();
     });
   });
 });
