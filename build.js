@@ -1,7 +1,5 @@
-const fs = require('fs');
-
-// Assuming config.js exports a JSON object
-const config = require('./config.js');
+import fs from 'fs';
+import config from './config.js';
 
 // Read the manifest file
 let manifest = fs.readFileSync('manifest.json', 'utf8');
