@@ -138,7 +138,7 @@ describe('Popup script', function() {
       // Check that the sendMessage was called with the correct message
       sinon.assert.calledWith(global.chrome.runtime.sendMessage, {
         action: "updateFrequency",
-        frequency: '120'
+        frequency: 120
       });
 
       // Restore real timers
