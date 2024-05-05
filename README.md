@@ -20,6 +20,14 @@ To continue development:
 4. Make changes to the codebase as needed.
 5. Use `npm test` to run tests and ensure functionality.
 
+## Running Unit Tests
+
+To run the unit tests:
+
+1. Ensure all dependencies are installed by running `npm install`.
+2. Run `npm test` to execute the tests.
+3. The test results will be displayed in the terminal. All tests should pass (indicated by green text).
+
 ## Testing in Chrome
 
 To test the extension in Chrome:
