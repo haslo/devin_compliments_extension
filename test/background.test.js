@@ -6,12 +6,29 @@ import { fetchData, init } from '../background.js'; // Import fetchData and init
 // Since we cannot require the actual background script, we will need to simulate its behavior
 global.fetch = fetch; // Mock fetch globally
 
-// Initialize global.chrome with a structure that supports sendMessage
+// Initialize global.chrome with a structure that supports sendMessage and other APIs used in background.js
 global.chrome = {
   runtime: {
     sendMessage: sinon.stub().callsFake((message, callback) => {
       if (callback) callback();
-    })
+    }),
+    onMessage: {
+      addListener: sinon.stub()
+    }
+  },
+  storage: {
+    sync: {
+      get: sinon.stub().callsFake((key, callback) => {
+        if (callback) callback({ popupInterval: 1 }); // Assuming default popupInterval is 1 minute
+      }),
+      set: sinon.stub().callsFake((obj, callback) => {
+        if (callback) callback();
+      })
+    }
+  },
+  alarms: {
+    create: sinon.stub(),
+    clear: sinon.stub()
   }
 };
 
@@ -36,13 +53,13 @@ describe('Background script', function() {
     setIntervalStub = sinon.stub(global, 'setInterval');
     clearIntervalStub = sinon.stub(global, 'clearInterval');
 
-    // Reset history for sendMessage stub
-    if (global.chrome.runtime.sendMessage && typeof global.chrome.runtime.sendMessage.resetHistory === 'function') {
-      global.chrome.runtime.sendMessage.resetHistory();
-    } else {
-      global.chrome.runtime.sendMessage = sinon.stub().callsFake((message, callback) => {
-        if (callback) callback();
-      });
+    // Reset history for all stubs in global.chrome
+    for (const api in global.chrome) {
+      for (const method in global.chrome[api]) {
+        if (typeof global.chrome[api][method].resetHistory === 'function') {
+          global.chrome[api][method].resetHistory();
+        }
+      }
     }
   });
 
@@ -51,8 +68,12 @@ describe('Background script', function() {
     fetchStub.restore();
     setIntervalStub.restore();
     clearIntervalStub.restore();
-    if (global.chrome.runtime.sendMessage && typeof global.chrome.runtime.sendMessage.restore === 'function') {
-      global.chrome.runtime.sendMessage.restore();
+    for (const api in global.chrome) {
+      for (const method in global.chrome[api]) {
+        if (typeof global.chrome[api][method].restore === 'function') {
+          global.chrome[api][method].restore();
+        }
+      }
     }
   });
 
