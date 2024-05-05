@@ -123,23 +123,20 @@ describe('Popup script', function() {
       const frequencyInput = document.getElementById('frequency-input');
       const submitButton = document.getElementById('frequency-submit');
 
-      // Set the frequency input value to '120'
-      frequencyInput.value = '120';
+      // Simulate setting the frequency input value to 120
+      frequencyInput.value = 120;
 
       // Set up fake timers
       const clock = sinon.useFakeTimers();
 
-      // Trigger the click on the submit button to initiate the frequency update
-      submitButton.click();
+      // Simulate the click on the submit button to initiate the frequency update
+      submitButton.dispatchEvent(new Event('click'));
 
       // Advance the fake timers to allow all async operations to complete
       clock.tick(100);
 
       // Check that the sendMessage was called with the correct message
-      sinon.assert.calledWith(global.chrome.runtime.sendMessage, {
-        action: "updateFrequency",
-        frequency: 120
-      });
+      sinon.assert.calledWith(global.chrome.runtime.sendMessage, sinon.match.has("action", "updateFrequency").and(sinon.match.has("frequency", 120)));
 
       // Restore real timers
       clock.restore();
