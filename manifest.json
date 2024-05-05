@@ -5,7 +5,7 @@
   "description": "Display a compliment from an API every minute",
   "permissions": [
     "activeTab",
-    "{{apiURL}}"
+    "https://jsonplaceholder.typicode.com/posts/1"
   ],
   "background": {
     "scripts": ["background.js"],
