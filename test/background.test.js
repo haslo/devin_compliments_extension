@@ -27,6 +27,11 @@ describe('Background script', function() {
     }
     fetchStub = sinon.stub(global, 'fetch');
 
+    // Setup fetchStub to return a promise that resolves to an object with a json method
+    fetchStub.returns(Promise.resolve({
+      json: () => Promise.resolve({ body: 'Test body content' })
+    }));
+
     // Stub setInterval and clearInterval
     setIntervalStub = sinon.stub(global, 'setInterval');
     clearIntervalStub = sinon.stub(global, 'clearInterval');
@@ -53,9 +58,6 @@ describe('Background script', function() {
 
   describe('fetchData function', function() {
     it('should call the API and send a message with the fetched data', async function() {
-      const fakeResponse = Promise.resolve({ json: () => Promise.resolve({ body: 'Test body content' }) });
-      fetchStub.returns(fakeResponse);
-
       // Simulate the fetchData function call
       await fetchData(); // fetchData would be the function from background.js that we are testing
 
@@ -70,8 +72,7 @@ describe('Background script', function() {
     });
 
     it('should not send a message if the fetch fails due to a network error', async function() {
-      const fakeError = Promise.reject(new Error('Network Error'));
-      fetchStub.returns(fakeError);
+      fetchStub.returns(Promise.reject(new Error('Network Error')));
 
       // Simulate the fetchData function call
       await fetchData();
@@ -84,8 +85,9 @@ describe('Background script', function() {
     });
 
     it('should not send a message if the response does not contain the expected body field', async function() {
-      const fakeResponse = Promise.resolve({ json: () => Promise.resolve({}) }); // Empty response object
-      fetchStub.returns(fakeResponse);
+      fetchStub.returns(Promise.resolve({
+        json: () => Promise.resolve({})
+      })); // Empty response object
 
       // Simulate the fetchData function call
       await fetchData();
@@ -104,14 +106,12 @@ describe('Background script', function() {
       // Since we cannot require config.js directly, we will assume the interval is 1 minute for this test
       const expectedInterval = 60000;
 
-      // The setInterval call should have been made when the script was loaded
       // Simulate the script loading
       fetchData();
       sinon.assert.calledWith(setIntervalStub, sinon.match.func, expectedInterval);
     });
 
     it('should call fetchData immediately when the script is loaded', function() {
-      // The fetchData function should have been called immediately when the script was loaded
       // Simulate the script loading
       fetchData();
       sinon.assert.called(fetchStub);
