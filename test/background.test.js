@@ -101,14 +101,24 @@ describe('Background script', function() {
   });
 
   describe('Interval and immediate call', function() {
-    it('should set an interval to call fetchData', function() {
+    it('should set an interval to call fetchData', function(done) {
       // The interval should be set using the value from config.js
       // Since we cannot require config.js directly, we will assume the interval is 1 minute for this test
       const expectedInterval = 60000;
 
       // Simulate the script loading
       fetchData();
-      sinon.assert.calledWith(setIntervalStub, sinon.match.func, expectedInterval);
+
+      // Use process.nextTick to wait for the next tick of the event loop,
+      // ensuring that setInterval has been called
+      process.nextTick(() => {
+        try {
+          sinon.assert.calledWith(setIntervalStub, fetchData, expectedInterval);
+          done();
+        } catch (error) {
+          done(error);
+        }
+      });
     });
 
     it('should call fetchData immediately when the script is loaded', function() {
