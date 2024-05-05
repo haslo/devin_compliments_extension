@@ -43,16 +43,20 @@ global.chrome = {
 import('../popup.js').then(() => {
   // Set up the listener mock to simulate the reception of messages
   global.chrome.runtime.onMessage.addListener.callsFake((message, sender, sendResponse) => {
+    const sendResponseStub = sinon.stub().callsFake(response => {
+      // This stub represents the sendResponse function
+    });
     if (message.action === "newData" && message.bodyText) {
       // Simulate a valid message being sent from the background script
       document.getElementById('compliment-text').textContent = message.bodyText;
       // Call the sendResponse function with received: true to simulate the behavior
-      sendResponse({ received: true });
+      sendResponseStub({ received: true });
     } else {
       // Simulate an invalid message by not changing the compliment text
       // Call the sendResponse function with received: false to simulate the behavior
-      sendResponse({ received: false });
+      sendResponseStub({ received: false });
     }
+    if (sendResponse) sendResponse(sendResponseStub.args[0][0]);
   });
 });
 
