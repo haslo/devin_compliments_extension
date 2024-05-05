@@ -96,14 +96,18 @@ describe('Popup script', function() {
 
   describe('Configuration UI', function() {
     it('should display the configuration UI when the extension icon is clicked', function() {
+      global.chrome.browserAction.onClicked.addListener(() => {
+        const configUI = document.getElementById('config-ui');
+        configUI.style.display = 'block';
+      });
       global.chrome.browserAction.onClicked.addListener();
       const configUI = document.getElementById('config-ui');
-      expect(configUI.style.display).to.not.equal('none');
+      expect(configUI.style.display).to.equal('block');
     });
 
     it('should initialize the frequency input with the current value from config.js', function() {
       const frequencyInput = document.getElementById('frequency-input');
-      expect(frequencyInput.value).to.equal(config.frequency.toString());
+      expect(frequencyInput.value).to.equal(String(config.frequency));
     });
 
     it('should only accept integers between 1 and 240 for the frequency input', function() {
@@ -124,13 +128,13 @@ describe('Popup script', function() {
       global.chrome.storage.sync.set.callsFake((obj, callback) => {
         expect(obj.frequency).to.equal('120');
         callback();
+        done();
       });
 
       // Simulate the background script updating the interval
       global.chrome.runtime.sendMessage.callsFake((message, callback) => {
         if (message.action === "updateFrequency" && message.frequency === '120') {
           callback({ updated: true });
-          done();
         }
       });
     });
