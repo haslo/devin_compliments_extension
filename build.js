@@ -1,5 +1,6 @@
 import fs from 'fs';
 import config from './config.js';
+import zip from 'cross-zip';
 
 // Read the manifest file
 let manifest = fs.readFileSync('manifest.json', 'utf8');
@@ -25,5 +26,4 @@ fs.copyFileSync('config.js', 'build/config.js');
 fs.copyFileSync('manifest.json', 'build/manifest.json');
 
 // Create a zip file of the build directory
-const zip = require('cross-zip');
 zip.zipSync('build', 'build/devin_compliments_extension.zip');
