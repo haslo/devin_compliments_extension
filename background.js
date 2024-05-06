@@ -15,7 +15,7 @@ function fetchCompliment() {
                     }
                     chrome.scripting.executeScript({
                         target: {tabId: tabs[0].id},
-                        files: ['contentScript.js']
+                        files: ['inject.js']
                     }).then(() => {
                         // After the script is injected, send the compliment to the content script
                         chrome.tabs.sendMessage(tabs[0].id, {action: "displayCompliment", compliment: data.compliment});
