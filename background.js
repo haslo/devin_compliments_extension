@@ -15,16 +15,11 @@ function fetchCompliment() {
                     }
                     chrome.scripting.executeScript({
                         target: {tabId: tabs[0].id},
-                        func: (compliment) => {
-                            if (typeof createOverlay === 'function') {
-                                createOverlay(compliment);
-                            }
-                        },
-                        args: [data.compliment]
-                    }, (injectionResults) => {
-                        if (chrome.runtime.lastError || injectionResults.length === 0) {
-                            console.error('Failed to inject script into the active tab.');
-                        }
+                        files: ['inject.js']
+                    }).then(() => {
+                        console.log('Injection completed.');
+                    }).catch(error => {
+                        console.error('Failed to inject script into the active tab:', error);
                     });
                 });
             }
