@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compliment Overlay Test</title>
+    <style>
+        /* Styles for the overlay */
+        .compliment-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            color: black;
+            background-color: rgba(255, 255, 255, 0.5); /* Light grey, semi-transparent */
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1000;
+            pointer-events: none; /* Make the overlay click-through */
+            opacity: 0;
+            transition: opacity 3s;
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <p>Content behind the overlay. This text should be clickable through the overlay.</p>
+        <button onclick="createOverlay('This is a test compliment!')">Test Overlay</button>
+    </div>
+
+    <script>
+        // Function to create and display the overlay with the compliment
+        function createOverlay(compliment) {
+            // Create the overlay div
+            const overlay = document.createElement('div');
+            overlay.className = 'compliment-overlay';
+            overlay.textContent = compliment;
+
+            // Append the overlay to the body
+            document.body.appendChild(overlay);
+
+            // Set the fade in and fade out animations
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+                setTimeout(() => {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => {
+                        document.body.removeChild(overlay);
+                    }, 6000); // Wait for fade out before removing
+                }, 10000); // Display time
+            }, 300); // Delay before fade in
+        }
+    </script>
+</body>
+</html>

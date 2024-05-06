@@ -17,7 +17,8 @@ function fetchCompliment() {
                         target: {tabId: tabs[0].id},
                         files: ['inject.js']
                     }).then(() => {
-                        console.log('Injection completed.');
+                        // After the script is injected, send the compliment to the content script
+                        chrome.tabs.sendMessage(tabs[0].id, {action: "displayCompliment", compliment: data.compliment});
                     }).catch(error => {
                         console.error('Failed to inject script into the active tab:', error);
                     });

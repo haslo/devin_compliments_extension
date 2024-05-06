@@ -33,5 +33,16 @@ function createOverlay(compliment) {
     }, 300); // Delay before fade in
 }
 
-// This will be called by the background script
-createOverlay('Fetching a nice compliment for you...');
+// This function will be called by the background script with the compliment text
+function receiveCompliment(complimentText) {
+    createOverlay(complimentText);
+}
+
+// Listen for messages from the background script
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.action === "displayCompliment") {
+            receiveCompliment(request.compliment);
+        }
+    }
+);
