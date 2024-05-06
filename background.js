@@ -2,7 +2,7 @@
 // This script will fetch data from the API every minute and send it to the popup
 import config from './config.js';
 
-let fetchInterval;
+// Removed fetchInterval as we will use chrome.alarms instead of setInterval
 
 export function fetchData() {
   console.log("Fetching data..."); // Log when data fetch is initiated
@@ -20,20 +20,11 @@ export function fetchData() {
     .catch(error => console.error('Error fetching data: ', error));
 }
 
-export function setFetchInterval(minutes) {
-  // Clear any existing interval
-  clearInterval(fetchInterval);
-
-  // Set a new interval with the provided frequency value
-  fetchInterval = setInterval(() => {
-    console.log("Interval triggered."); // Log when the interval is triggered
-    fetchData();
-  }, minutes * 60000);
-}
+// Removed setFetchInterval function as we will use chrome.alarms instead of setInterval
 
 export function init() {
-  // Fetch data at the interval specified in the config
-  setFetchInterval(config.popupInterval);
+  // Create an alarm to fetch data at the interval specified in the config
+  chrome.alarms.create("fetchDataAlarm", { periodInMinutes: config.popupInterval });
 
   // Fetch data immediately when the script is loaded
   fetchData();
@@ -44,9 +35,10 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.action === "updateFrequency" && message.frequency) {
     const frequency = parseInt(message.frequency, 10);
     if (!isNaN(frequency) && frequency >= 1 && frequency <= 240) {
-      // Update the frequency in config and adjust the running interval
+      // Update the frequency in config
       config.popupInterval = frequency;
-      setFetchInterval(frequency);
+      // Create or update the alarm with the new frequency
+      chrome.alarms.create("fetchDataAlarm", { periodInMinutes: frequency });
       // Persist the updated frequency value
       chrome.storage.sync.set({ popupInterval: frequency }, function() {
         console.log('Popup frequency updated to ' + frequency + ' minutes.');
@@ -55,5 +47,12 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   }
 });
 
-// Call init to start the interval and immediate data fetch
+// Set up an alarm listener to call fetchData when the alarm goes off
+chrome.alarms.onAlarm.addListener(alarm => {
+  if (alarm.name === "fetchDataAlarm") {
+    fetchData();
+  }
+});
+
+// Call init to create the alarm and immediate data fetch
 init();
