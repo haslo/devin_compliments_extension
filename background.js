@@ -17,7 +17,15 @@ function fetchData() {
       if (data.hasOwnProperty(config.textKey)) {
         const bodyText = data[config.textKey];
         // Send the fetched body text to the popup script
-        chrome.runtime.sendMessage({ action: "newData", bodyText: bodyText });
+        chrome.runtime.sendMessage({ action: "newData", bodyText: bodyText }, function(response) {
+          if (chrome.runtime.lastError) {
+            // Log error if there is no listener registered
+            console.error('Error sending message: ', chrome.runtime.lastError);
+          } else {
+            // Log the response if it exists
+            console.log("Response from receiver: ", response);
+          }
+        });
         console.log("Data fetched and sent: ", bodyText); // Log the fetched data
       }
     })
