@@ -10,12 +10,12 @@ function fetchCompliment() {
                 // Send the compliment to the content script
                 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
                     if (tabs.length === 0 || !tabs[0].url || tabs[0].url.startsWith('chrome://')) {
-                        console.error('No active tab found or chrome:// URL detected.');
+                        // Silently ignore chrome:// URLs
                         return;
                     }
                     chrome.scripting.executeScript({
                         target: {tabId: tabs[0].id},
-                        files: ['inject.js']
+                        files: ['contentScript.js']
                     }).then(() => {
                         // After the script is injected, send the compliment to the content script
                         chrome.tabs.sendMessage(tabs[0].id, {action: "displayCompliment", compliment: data.compliment});
