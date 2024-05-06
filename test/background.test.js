@@ -28,8 +28,15 @@ global.chrome = {
   alarms: {
     create: sinon.stub(),
     clear: sinon.stub(),
+    // Mock the onAlarm API with an object that can store listeners and trigger them manually
     onAlarm: {
-      addListener: sinon.stub()
+      listeners: [],
+      addListener: function(callback) {
+        this.listeners.push(callback);
+      },
+      triggerListeners: function() { // Manually trigger all the listeners for testing
+        this.listeners.forEach(listener => listener({ name: 'fetchDataAlarm' }));
+      }
     }
   }
 };

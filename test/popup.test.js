@@ -1,7 +1,13 @@
 import { expect } from 'chai';
 import { JSDOM } from 'jsdom';
 import sinon from 'sinon';
-import config from '../config.js';
+
+// Define config object directly in test file
+const config = {
+  apiURL: 'https://complimentsapi-274811442e1d.herokuapp.com/compliment',
+  textKey: 'compliment',
+  popupInterval: 30 // Set to 30 minutes
+};
 
 // Load the popup HTML into jsdom
 const { document } = (new JSDOM(`<!DOCTYPE html><html><body>
