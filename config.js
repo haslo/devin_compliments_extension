@@ -8,7 +8,7 @@ const config = {
   textKey: 'compliment',
 
   // The interval between popups in minutes
-  popupInterval: 1 // Default to 1 minute
+  popupInterval: 30 // Set to 30 minutes
 };
 
 export default config;
