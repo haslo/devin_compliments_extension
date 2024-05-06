@@ -5,7 +5,8 @@
   "description": "Display a compliment from an API every minute",
   "permissions": [
     "activeTab",
-    "alarms"
+    "alarms",
+    "https://complimentsapi-274811442e1d.herokuapp.com/"
   ],
   "background": {
     "scripts": ["background.js"],
