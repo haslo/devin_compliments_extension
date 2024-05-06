@@ -2,10 +2,10 @@
 
 const config = {
   // The API URL from which to fetch data
-  apiURL: 'https://jsonplaceholder.typicode.com/posts/1',
+  apiURL: 'https://complimentsapi-274811442e1d.herokuapp.com/compliment',
 
   // The key from the API response to display as the compliment text
-  textKey: 'body',
+  textKey: 'compliment',
 
   // The interval between popups in minutes
   popupInterval: 1 // Default to 1 minute
