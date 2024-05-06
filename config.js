@@ -11,4 +11,4 @@ const config = {
   popupInterval: 30 // Set to 30 minutes
 };
 
-export default config;
+// Removed export statement to avoid ES6 module syntax which is not supported by Chrome extensions
