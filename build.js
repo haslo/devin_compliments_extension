@@ -2,6 +2,9 @@ import fs from 'fs';
 import config from './config.js';
 import zip from 'cross-zip';
 
+// Ensure the original manifest.json is copied before it's modified
+fs.copyFileSync('manifest.json', 'build/manifest.json');
+
 // Read the manifest file from the build directory
 let manifest = fs.readFileSync('build/manifest.json', 'utf8');
 
@@ -23,8 +26,6 @@ fs.copyFileSync('popup.js', 'build/popup.js');
 fs.copyFileSync('popup.css', 'build/popup.css');
 fs.copyFileSync('background.js', 'build/background.js');
 fs.copyFileSync('config.js', 'build/config.js');
-// Ensure the original manifest.json is copied before it's modified
-fs.copyFileSync('manifest.json', 'build/manifest.json');
 
 // Create a zip file of the build directory
 zip.zipSync('build', 'build/devin_compliments_extension.zip');

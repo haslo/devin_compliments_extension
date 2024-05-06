@@ -51,8 +51,8 @@ body, html {
 
 #config-ui {
   display: block; /* Ensure the config UI is displayed as a block-level element */
-  min-width: 250px; /* Set a minimum width for the config UI */
-  min-height: 100px; /* Set a minimum height for the config UI */
+  width: 100%; /* Set width to use the full container width */
+  min-height: 150px; /* Increase minimum height for the config UI */
   padding: 10px; /* Add some padding for visual appeal */
   box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
