@@ -8,8 +8,8 @@ function createOverlay(compliment) {
         transform: translate(-50%, -50%);
         width: 50%;
         max-width: 600px;
-        background: rgba(211, 211, 211, 0.5); // Light grey background
-        backdrop-filter: blur(10px);
+        background-color: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(2px);
         border-radius: 15px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         padding: 20px;

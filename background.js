@@ -7,20 +7,27 @@ function fetchCompliment() {
         .then(response => response.json())
         .then(data => {
             if (data.compliment) {
+                console.log(data.compliment);
                 // Send the compliment to the content script
                 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                    if (tabs.length === 0 || !tabs[0].url || tabs[0].url.startsWith('chrome://')) {
-                        // Silently ignore chrome:// URLs
+                    tabs.forEach(tab => {
+                        console.log(tab);
+                    });
+                    if (tabs.length === 0) {
+                        console.log('No active tab, skipping');
                         return;
                     }
                     chrome.scripting.executeScript({
                         target: {tabId: tabs[0].id},
                         files: ['inject.js']
                     }).then(() => {
-                        // After the script is injected, send the compliment to the content script
                         chrome.tabs.sendMessage(tabs[0].id, {action: "displayCompliment", compliment: data.compliment});
                     }).catch(error => {
-                        console.error('Failed to inject script into the active tab:', error);
+                        if (error.message.includes("chrome:// URL")) {
+                            console.log('Skipping display on chrome:// URL');
+                        } else {
+                            console.error('Failed to inject script into the active tab:', error);
+                        }
                     });
                 });
             }
@@ -31,7 +38,7 @@ function fetchCompliment() {
 }
 
 // Set up an alarm to fetch the compliment every minute
-chrome.alarms.create('fetchCompliment', { periodInMinutes: 1 });
+chrome.alarms.create('fetchCompliment', { periodInMinutes: 10 });
 
 // Add a listener for the alarm
 chrome.alarms.onAlarm.addListener((alarm) => {

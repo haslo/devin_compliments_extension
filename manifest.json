@@ -16,6 +16,7 @@
     "default_popup": "popup.html"
   },
   "host_permissions": [
-    "https://complimentsapi-274811442e1d.herokuapp.com/*"
+    "https://complimentsapi-274811442e1d.herokuapp.com/*",
+    "<all_urls>"
   ]
 }
