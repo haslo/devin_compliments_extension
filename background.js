@@ -9,7 +9,23 @@ function fetchCompliment() {
             if (data.compliment) {
                 // Send the compliment to the content script
                 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                    chrome.tabs.sendMessage(tabs[0].id, { action: "showOverlay", compliment: data.compliment });
+                    if (tabs.length === 0) {
+                        console.error('No active tab found.');
+                        return;
+                    }
+                    chrome.scripting.executeScript({
+                        target: {tabId: tabs[0].id},
+                        func: (compliment) => {
+                            if (typeof createOverlay === 'function') {
+                                createOverlay(compliment);
+                            }
+                        },
+                        args: [data.compliment]
+                    }, (injectionResults) => {
+                        if (chrome.runtime.lastError || injectionResults.length === 0) {
+                            console.error('Failed to inject script into the active tab.');
+                        }
+                    });
                 });
             }
         })
