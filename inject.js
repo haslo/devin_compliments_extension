@@ -14,6 +14,7 @@ function createOverlay(compliment) {
     overlay.style.textAlign = 'center';
     overlay.style.zIndex = '1000';
     overlay.style.pointerEvents = 'none'; // Make the overlay click-through
+    overlay.style.backdropFilter = 'blur(10px)'; // Frosted glass effect
     overlay.textContent = compliment;
 
     // Append the overlay to the body
