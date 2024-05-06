@@ -20,7 +20,7 @@ function createOverlay(content) {
 
 // Listen for messages from the background script
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    if (message.action === "showOverlay" && message.bodyText) {
+    if (message.action === "newData" && message.bodyText) {
         // Create an overlay with the message body text
         createOverlay(message.bodyText);
     }
