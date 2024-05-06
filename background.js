@@ -9,8 +9,8 @@ function fetchCompliment() {
             if (data.compliment) {
                 // Send the compliment to the content script
                 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                    if (tabs.length === 0) {
-                        console.error('No active tab found.');
+                    if (tabs.length === 0 || !tabs[0].url || tabs[0].url.startsWith('chrome://')) {
+                        console.error('No active tab found or chrome:// URL detected.');
                         return;
                     }
                     chrome.scripting.executeScript({
