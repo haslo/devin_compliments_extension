@@ -5,6 +5,7 @@ import config from './config.js';
 let fetchInterval;
 
 export function fetchData() {
+  console.log("Fetching data..."); // Log when data fetch is initiated
   fetch(config.apiURL)
     .then(response => response.json())
     .then(data => {
@@ -13,6 +14,7 @@ export function fetchData() {
         const bodyText = data[config.textKey];
         // Send the fetched body text to the popup script
         chrome.runtime.sendMessage({ action: "newData", bodyText: bodyText });
+        console.log("Data fetched and sent: ", bodyText); // Log the fetched data
       }
     })
     .catch(error => console.error('Error fetching data: ', error));
@@ -23,7 +25,10 @@ export function setFetchInterval(minutes) {
   clearInterval(fetchInterval);
 
   // Set a new interval with the provided frequency value
-  fetchInterval = setInterval(fetchData, minutes * 60000);
+  fetchInterval = setInterval(() => {
+    console.log("Interval triggered."); // Log when the interval is triggered
+    fetchData();
+  }, minutes * 60000);
 }
 
 export function init() {
