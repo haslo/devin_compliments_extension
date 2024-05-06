@@ -36,6 +36,7 @@ fs.copyFileSync('popup.html', 'build/popup.html');
 fs.copyFileSync('popup.js', 'build/popup.js');
 fs.copyFileSync('popup.css', 'build/popup.css');
 fs.copyFileSync('background.js', 'build/background.js');
+fs.copyFileSync('contentScript.js', 'build/contentScript.js'); // Added line to copy contentScript.js
 // Removed the copying of config.js as it's now integrated within build.js
 
 // Create a zip file of the build directory

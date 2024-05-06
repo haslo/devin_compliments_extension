@@ -20,7 +20,7 @@ function fetchData() {
         chrome.runtime.sendMessage({ action: "newData", bodyText: bodyText }, function(response) {
           if (chrome.runtime.lastError) {
             // Log error if there is no listener registered
-            console.error('Error sending message: ', chrome.runtime.lastError);
+            console.error('Error sending message: ', JSON.stringify(chrome.runtime.lastError, null, 2));
           } else {
             // Log the response if it exists
             console.log("Response from receiver: ", response);
