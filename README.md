@@ -2,6 +2,8 @@
 
 This Chrome extension fetches compliments from a specified API and displays them in a styled overlay on the active webpage. The overlay is designed to be click-through and does not interrupt the user's workflow.
 
+A random compliment will display every 10 minutes. You can fish for compliments by clicking the extension icon.
+
 ## Features
 - Fetches compliments from `https://complimentsapi-274811442e1d.herokuapp.com/compliment`
 - Displays the compliment in the middle of the Chrome window with specific styling
