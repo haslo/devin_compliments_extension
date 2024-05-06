@@ -27,14 +27,17 @@ global.chrome = {
   },
   alarms: {
     create: sinon.stub(),
-    clear: sinon.stub()
+    clear: sinon.stub(),
+    onAlarm: {
+      addListener: sinon.stub()
+    }
   }
 };
 
 // Delayed import of background.js functions
 let fetchData, init;
 
-before(async function() {
+beforeEach(async function() {
   // Mocks are already set up here
   // Now, dynamically import the background.js module which uses the chrome API
   const background = await import('../background.js');
