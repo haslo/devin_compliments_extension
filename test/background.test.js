@@ -56,7 +56,7 @@ describe('Background script', function() {
 
     // Setup fetchStub to return a promise that resolves to an object with a json method
     fetchStub.returns(Promise.resolve({
-      json: () => Promise.resolve({ body: 'Test body content' })
+      json: () => Promise.resolve({ compliment: 'Test compliment content' })
     }));
 
     // Stub setInterval and clearInterval
@@ -93,13 +93,13 @@ describe('Background script', function() {
       await fetchData(); // fetchData would be the function from background.js that we are testing
 
       expect(fetchStub.calledOnce).to.be.true;
-      expect(fetchStub.firstCall.args[0]).to.equal('https://jsonplaceholder.typicode.com/posts/1');
+      expect(fetchStub.firstCall.args[0]).to.equal('https://complimentsapi-274811442e1d.herokuapp.com/compliment');
 
       // Since fetchData uses .then, we need to wait for the next tick
       await new Promise(process.nextTick);
 
       expect(global.chrome.runtime.sendMessage.calledOnce).to.be.true;
-      expect(global.chrome.runtime.sendMessage.firstCall.args[0]).to.deep.equal({ action: "newData", bodyText: 'Test body content' });
+      expect(global.chrome.runtime.sendMessage.firstCall.args[0]).to.deep.equal({ action: "newData", bodyText: 'Test compliment content' });
     });
 
     it('should not send a message if the fetch fails due to a network error', async function() {
