@@ -1,8 +1,15 @@
 // background.js
 // This script will fetch data from the API every minute and send it to the popup
-import config from './config.js';
 
-// Removed fetchInterval as we will use chrome.alarms instead of setInterval
+// Removed import statement as service workers do not support ES6 modules
+// import config from './config.js';
+
+// Define config object directly in background.js for now
+const config = {
+  apiURL: 'https://complimentsapi-274811442e1d.herokuapp.com/compliment',
+  textKey: 'compliment',
+  popupInterval: 30 // Set to 30 minutes
+};
 
 export function fetchData() {
   console.log("Fetching data..."); // Log when data fetch is initiated
@@ -19,8 +26,6 @@ export function fetchData() {
     })
     .catch(error => console.error('Error fetching data: ', error));
 }
-
-// Removed setFetchInterval function as we will use chrome.alarms instead of setInterval
 
 export function init() {
   // Create an alarm to fetch data at the interval specified in the config
