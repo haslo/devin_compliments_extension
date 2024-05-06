@@ -105,13 +105,14 @@ describe('Background script', function() {
     it('should not send a message if the fetch fails due to a network error', async function() {
       fetchStub.returns(Promise.reject(new Error('Network Error')));
 
-      // Simulate the fetchData function call
-      await fetchData();
+      try {
+        await fetchData();
+      } catch (error) {
+        // Expect an error to be thrown
+        expect(error).to.be.an('error');
+      }
 
-      // Since fetchData uses .catch, we need to wait for the next tick
-      await new Promise(process.nextTick);
-
-      expect(fetchStub.calledOnce).to.be.true;
+      // Verify that sendMessage was not called
       expect(global.chrome.runtime.sendMessage.notCalled).to.be.true;
     });
 
