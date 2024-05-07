@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.compliment) {
+                // Remove the placeholder class and update the text color to black
+                complimentElement.classList.remove('placeholder');
                 complimentElement.textContent = data.compliment;
             } else {
                 complimentElement.textContent = 'No compliment found. Try again later!';
